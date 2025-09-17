@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Barcode Average Price</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>UPC / Barcode Lookup (Average Price)</h1>
+  <input type="text" id="barcode" placeholder="Enter barcode">
+  <button id="submitBtn">Submit</button>
+
+  <div class="product-info" id="productInfo"></div>
+
+  <script>
+    const btn = document.getElementById('submitBtn');
+    const input = document.getElementById('barcode');
+    const infoDiv = document.getElementById('productInfo');
+
+    btn.addEventListener('click', async () => {
+      const barcode = input.value.trim();
+      if (!barcode) return alert('Please enter a barcode');
+
+      infoDiv.innerHTML = 'Loading...';
+
+      try {
+        const res = await fetch(`/api/average-price/${barcode}`);
+        const data = await res.json();
+
+        if (!data.ok) {
+          infoDiv.innerHTML = `<p style="color:red;">${data.error || 'Product not found'}</p>`;
+          return;
+        }
+
+        const product = data.product;
+
+        let html = `<h2>${product.title || 'No Title'}</h2>`;
+        html += `<p><strong>Brand:</strong> ${product.brand || '-'}</p>`;
+        html += `<p><strong>Category:</strong> ${product.category || '-'}</p>`;
+        html += `<p><strong>Average Price:</strong> ${product.averagePrice ? '$'+product.averagePrice : 'N/A'}</p>`;
+        html += `<p><strong>All Prices:</strong> ${product.prices.length ? product.prices.join(', ') : 'N/A'}</p>`;
+        if (product.images.length) {
+          product.images.forEach(img => { html += `<img src="${img}" alt="Product Image">`; });
+        }
+
+        infoDiv.innerHTML = html;
+
+      } catch (err) {
+        console.error(err);
+        infoDiv.innerHTML = `<p style="color:red;">Error fetching product info</p>`;
+      }
+    });
+  </script>
+</body>
+</html>

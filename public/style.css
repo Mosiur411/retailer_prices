@@ -1,0 +1,20 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+input {
+  padding: 8px;
+  width: 300px;
+  margin-right: 5px;
+}
+button {
+  padding: 8px 12px;
+}
+img {
+  max-width: 150px;
+  display: block;
+  margin: 10px 0;
+}
+.product-info {
+  margin-top: 20px;
+}
